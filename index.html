@@ -7,7 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary: #0366d6; /* GitHub Blue */
+            --primary: #0366d6;
             --bg: #f6f8fa;
             --white: #ffffff;
             --border: #d0d7de;
@@ -20,106 +20,69 @@
 
         body { background-color: var(--bg); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* 顶部导航 */
         .header {
-            background: var(--white);
-            height: 60px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            justify-content: space-between;
+            background: var(--white); height: 60px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; padding: 0 24px; justify-content: space-between;
         }
         .brand { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .search-box input {
-            padding: 6px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            width: 260px;
-            background: var(--bg);
+            padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; width: 260px; background: var(--bg);
         }
 
-        /* 主体 */
         .layout { display: flex; flex: 1; overflow: hidden; }
 
-        /* 侧边栏 */
         .sidebar {
-            width: 280px;
-            background: var(--white);
-            border-right: 1px solid var(--border);
-            overflow-y: auto;
-            padding: 16px 0;
-            display: flex;
-            flex-direction: column;
+            width: 280px; background: var(--white); border-right: 1px solid var(--border);
+            overflow-y: auto; padding: 16px 0; display: flex; flex-direction: column;
         }
         .nav-item {
-            padding: 8px 24px;
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            padding: 8px 24px; cursor: pointer; font-size: 14px; color: var(--text-main);
+            display: flex; align-items: center; gap: 10px; border-left: 3px solid transparent;
         }
         .nav-item:hover { background: var(--hover); }
-        .nav-item.active { background: #eef3f8; color: var(--primary); font-weight: 600; border-right: 3px solid var(--primary); }
+        .nav-item.active { background: #eef3f8; color: var(--primary); font-weight: 600; border-left: 3px solid var(--primary); }
 
-        /* 内容区 */
         .main { flex: 1; display: flex; flex-direction: column; background: var(--white); overflow: hidden; }
 
         .breadcrumb {
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
-            color: var(--primary);
+            padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--primary);
+            display: flex; align-items: center;
         }
         .breadcrumb span { cursor: pointer; }
         .breadcrumb span:hover { text-decoration: underline; }
         .breadcrumb .sep { color: var(--text-sub); margin: 0 8px; text-decoration: none !important; cursor: default; }
+        .breadcrumb .current { color: var(--text-main); font-weight: 600; cursor: default; text-decoration: none !important; }
 
         .file-list { flex: 1; overflow-y: auto; }
         
         .file-row {
-            display: flex;
-            align-items: center;
-            padding: 12px 24px;
-            border-bottom: 1px solid #ebf0f4;
-            cursor: pointer;
+            display: flex; align-items: center; padding: 12px 24px; border-bottom: 1px solid #ebf0f4; cursor: pointer;
         }
         .file-row:hover { background: var(--hover); }
         .icon { width: 32px; text-align: center; font-size: 18px; color: var(--text-sub); }
         .name { flex: 1; font-size: 14px; font-weight: 500; }
         .meta { font-size: 12px; color: var(--text-sub); }
 
-        /* 图标色 */
         .fa-folder { color: #54aeff; }
         .fa-file-pdf { color: #ff5555; }
         .fa-file-word { color: #3b82f6; }
         .fa-file-powerpoint { color: #f97316; }
         .fa-file-image { color: #a855f7; }
+        .fa-file-code { color: #6e7681; }
 
-        /* 模态框 */
         .modal-mask {
-            display: none;
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
-            justify-content: center; align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 999; justify-content: center; align-items: center;
         }
         .modal-mask.show { display: flex; }
         
         .preview-window {
-            background: white;
-            width: 90%; height: 90%;
-            border-radius: 8px;
-            display: flex; flex-direction: column;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            background: white; width: 90%; height: 90%; border-radius: 8px;
+            display: flex; flex-direction: column; box-shadow: 0 12px 30px rgba(0,0,0,0.3);
         }
         .pw-header {
-            padding: 0 20px; height: 50px;
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            background: #fcfcfc;
+            padding: 0 20px; height: 50px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; background: #fcfcfc;
         }
         .pw-title { font-weight: 600; font-size: 14px; }
         .pw-body { flex: 1; background: #eee; position: relative; }
@@ -132,7 +95,6 @@
 
         .not-support { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #666; }
         
-        /* 移动端 */
         @media(max-width: 768px) {
             .sidebar { display: none; }
             .preview-window { width: 100%; height: 100%; border-radius: 0; }
@@ -171,20 +133,16 @@
 </div>
 
 <script>
-    // ==========================================
-    // 1. 核心配置 (请确认这里无误)
-    // ==========================================
+    // 1. 配置
     const CONFIG = {
         user: 'CreamPuff931',
         repo: 'cs-learning-materials',
         branch: 'main'
     };
 
-    // ==========================================
-    // 2. 数据结构 (JSON)
-    // ==========================================
+    // 2. 数据
     const fileData = {
-        name: "根目录", // 这个名字在下面会被忽略，不会拼接到URL里
+        name: "根目录", 
         type: "folder",
         children: [
             {
@@ -389,104 +347,95 @@
         ]
     };
 
-    // ==========================================
-    // 3. 关键逻辑修复
-    // ==========================================
-
-    // 初始化：构建真实路径 (修正版)
+    // 3. 路径计算 (不包含根目录)
     function initPathStructure(node, currentPath) {
-        // 核心修复：如果节点是 "根目录"，我们不要把它包含在路径里
-        // 之前的代码可能生成了 "根目录/计算机网络/..."
-        // 现在逻辑：如果当前节点是根目录，传给子节点的路径前缀是 ""
-        
         let myPath = "";
-
         if (node.name === "根目录" || currentPath === null) {
             myPath = ""; 
         } else {
-            // 如果 parentPath 已经是 "计算机网络"，当前是 "复习.pdf"
-            // myPath = "计算机网络/复习.pdf"
             myPath = currentPath ? (currentPath + "/" + node.name) : node.name;
         }
-
-        node.realPath = myPath; // 存储：例如 "计算机网络/计算机网络复习.pdf"
+        node.realPath = myPath;
 
         if (node.children) {
             node.children.forEach(child => initPathStructure(child, myPath));
         }
     }
-
-    // 立即执行初始化
     initPathStructure(fileData, null);
 
-    // ==========================================
-    // 4. URL 生成器 (核心修复)
-    // ==========================================
+    // 4. URL生成
     function generateGithubUrl(fileNode) {
-        // 拿到我们在 initPathStructure 里算好的路径，例如 "计算机网络/计算机网络复习.pdf"
         const rawPath = fileNode.realPath;
-        
-        if (!rawPath) {
-            alert("路径生成错误：空路径");
-            return "";
-        }
-
-        // 必须对每个部分分别编码！不能对整个字符串编码，否则 "/" 也会变成 "%2F"
+        if (!rawPath) return "";
         const parts = rawPath.split('/');
         const encodedPath = parts.map(p => encodeURIComponent(p)).join('/');
-
-        // 拼接 GitHub Raw 地址
-        // https://raw.githubusercontent.com/CreamPuff931/cs-learning-materials/main/EncodedPath
         return `https://raw.githubusercontent.com/${CONFIG.user}/${CONFIG.repo}/${CONFIG.branch}/${encodedPath}`;
     }
 
-    // ==========================================
-    // 5. 界面渲染逻辑
-    // ==========================================
+    // 5. 状态管理
     let currentStack = [fileData];
-    let currentFileUrl = ""; // 保存当前打开的文件URL
+    let currentFileUrl = "";
 
     window.onload = () => {
-        renderSidebar();
-        renderView();
+        renderView(); // 统一入口
     };
-
-    function renderSidebar() {
-        const sb = document.getElementById('sidebar');
-        sb.innerHTML = `<div class="nav-item ${currentStack.length===1?'active':''}" onclick="goRoot()">
-            <i class="fas fa-home"></i> 根目录
-        </div>`;
-        
-        // 侧边栏只显示第一级文件夹
-        fileData.children.forEach(item => {
-            if(item.type === 'folder') {
-                sb.innerHTML += `<div class="nav-item" onclick="enterFolder('${item.name}')">
-                    <i class="fas fa-folder"></i> ${item.name}
-                </div>`;
-            }
-        });
-    }
 
     function renderView() {
         const currentFolder = currentStack[currentStack.length - 1];
         
-        // 面包屑
-        const bc = document.getElementById('breadcrumb');
-        bc.innerHTML = '';
-        currentStack.forEach((folder, index) => {
-            const span = document.createElement('span');
-            span.innerText = folder.name;
-            span.onclick = () => {
-                currentStack = currentStack.slice(0, index + 1);
-                renderView();
-            };
-            bc.appendChild(span);
-            if(index < currentStack.length - 1) {
-                bc.innerHTML += '<span class="sep">/</span>';
+        // 5.1 渲染侧边栏 (每次都重新渲染以更新高亮)
+        const sb = document.getElementById('sidebar');
+        sb.innerHTML = '';
+        
+        // 侧栏根目录
+        const rootItem = document.createElement('div');
+        rootItem.className = `nav-item ${currentStack.length === 1 ? 'active' : ''}`;
+        rootItem.innerHTML = '<i class="fas fa-home"></i> 根目录';
+        rootItem.onclick = goRoot;
+        sb.appendChild(rootItem);
+
+        // 侧栏一级目录
+        fileData.children.forEach(item => {
+            if(item.type === 'folder') {
+                // 判断当前路径中是否包含该文件夹
+                const isActive = currentStack.length > 1 && currentStack[1].name === item.name;
+                const div = document.createElement('div');
+                div.className = `nav-item ${isActive ? 'active' : ''}`;
+                div.innerHTML = `<i class="fas fa-folder"></i> ${item.name}`;
+                div.onclick = () => enterFolder(item.name);
+                sb.appendChild(div);
             }
         });
 
-        // 文件列表
+        // 5.2 渲染面包屑 (核心修复点)
+        const bc = document.getElementById('breadcrumb');
+        bc.innerHTML = '';
+
+        // 强制添加根目录节点
+        const rootSpan = document.createElement('span');
+        rootSpan.innerText = '根目录';
+        rootSpan.className = currentStack.length === 1 ? 'current' : '';
+        rootSpan.onclick = goRoot;
+        bc.appendChild(rootSpan);
+
+        // 循环添加后续路径 (从索引1开始)
+        for (let i = 1; i < currentStack.length; i++) {
+            bc.innerHTML += '<span class="sep">/</span>';
+            const span = document.createElement('span');
+            span.innerText = currentStack[i].name;
+            // 如果是最后一个，标记为 current，不可点
+            if (i === currentStack.length - 1) {
+                span.className = 'current';
+            } else {
+                span.onclick = () => {
+                    currentStack = currentStack.slice(0, i + 1);
+                    renderView();
+                };
+            }
+            bc.appendChild(span);
+        }
+
+        // 5.3 渲染文件列表
         const list = document.getElementById('fileList');
         list.innerHTML = '';
         
@@ -517,14 +466,12 @@
         });
     }
 
-    // 交互逻辑
     function goRoot() {
         currentStack = [fileData];
         renderView();
     }
     
     function enterFolder(name) {
-        // 从根目录查找
         const target = fileData.children.find(c => c.name === name);
         if(target) {
             currentStack = [fileData, target];
@@ -541,9 +488,6 @@
         }
     }
 
-    // ==========================================
-    // 6. 预览逻辑
-    // ==========================================
     function openPreview(node) {
         const modal = document.getElementById('modal');
         const title = document.getElementById('fileTitle');
@@ -553,49 +497,31 @@
         modal.classList.add('show');
         body.innerHTML = '<div class="not-support">正在加载资源...</div>';
 
-        // 生成 URL
         const url = generateGithubUrl(node);
         currentFileUrl = url;
 
-        console.log("生成的链接:", url); // 调试用：你按F12能在控制台看到这个链接
-
-        // 根据类型决定怎么预览
-        
-        // 图片
         if (node.type === 'image') {
             body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100%"><img src="${url}" style="max-width:90%;max-height:90%"></div>`;
         }
-        // PDF (使用 jsDelivr CDN 可能会更好，但先试 Raw)
         else if (node.type === 'pdf') {
-            // PDF 直接嵌入
-            // 技巧：如果是 Raw Github，有时浏览器会强制下载。
-            // 我们可以尝试替换域名为 cdn.jsdelivr.net 加速并支持预览
-            // https://cdn.jsdelivr.net/gh/User/Repo@Branch/Path
-            const cdnUrl = url.replace('raw.githubusercontent.com', 'cdn.jsdelivr.net/gh')
-                              .replace('/main/', '@main/');
+            const cdnUrl = url.replace('raw.githubusercontent.com', 'cdn.jsdelivr.net/gh').replace('/main/', '@main/');
             body.innerHTML = `<iframe src="${cdnUrl}"></iframe>`;
-            currentFileUrl = cdnUrl; // 下载也用快的
+            currentFileUrl = cdnUrl;
         }
-        // Office (Word/PPT)
         else if (node.type === 'word' || node.type === 'ppt') {
             const encodedUrl = encodeURIComponent(url);
-            const officeViewer = `https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}`;
-            body.innerHTML = `<iframe src="${officeViewer}"></iframe>`;
+            body.innerHTML = `<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}"></iframe>`;
         }
-        // 代码/文本
         else if (node.type === 'code') {
             fetch(url).then(res => res.text()).then(txt => {
                 const safe = txt.replace(/</g, "&lt;");
                 body.innerHTML = `<div style="padding:20px;overflow:auto;height:100%;background:#2d2d2d;color:#ccc;font-family:monospace;white-space:pre;">${safe}</div>`;
-            }).catch(e => {
-                body.innerHTML = `<div class="not-support">无法读取文件内容 (跨域或404)</div>`;
+            }).catch(() => {
+                body.innerHTML = `<div class="not-support">无法读取文件内容</div>`;
             });
         }
         else {
-            body.innerHTML = `<div class="not-support">
-                <i class="fas fa-download fa-3x" style="margin-bottom:15px"></i>
-                <p>该格式不支持在线预览</p>
-            </div>`;
+            body.innerHTML = `<div class="not-support"><i class="fas fa-download fa-3x" style="margin-bottom:15px"></i><p>该格式不支持在线预览</p></div>`;
         }
     }
 
@@ -614,15 +540,11 @@
         document.body.removeChild(a);
     }
     
-    // 搜索
     document.getElementById('searchInput').addEventListener('input', (e) => {
         const val = e.target.value.toLowerCase();
         if(!val) { renderView(); return; }
-        
         const list = document.getElementById('fileList');
         list.innerHTML = '';
-        
-        // 递归搜索
         function search(node) {
             if(node.type !== 'folder' && node.name.toLowerCase().includes(val)) {
                 const el = document.createElement('div');
@@ -635,7 +557,6 @@
         }
         search(fileData);
     });
-
 </script>
 </body>
 </html>
