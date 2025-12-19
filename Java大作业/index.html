@@ -1,1 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Java 大作业 · 学生管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --bg: #f6f8fa;
+            --card: #ffffff;
+            --primary: #0969da;
+            --text: #24292f;
+            --muted: #57606a;
+            --border: #d0d7de;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 32px 20px;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        section h2 {
+            margin-top: 0;
+            font-size: 20px;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+        }
+
+        ul.file-list {
+            list-style: none;
+            padding: 0;
+            margin: 16px 0 0;
+        }
+
+        ul.file-list li {
+            padding: 12px 8px;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        ul.file-list li:last-child {
+            border-bottom: none;
+        }
+
+        ul.file-list a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        ul.file-list a:hover {
+            text-decoration: underline;
+        }
+
+        .desc {
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            padding: 24px 0 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Java 大作业</h1>
+    <p>学生利息管理系统 · 源代码与实验文档</p>
+</header>
+
+<main>
+
+    <section>
+        <h2>📂 Java 源代码</h2>
+        <ul class="file-list">
+            <li>
+                <a href="InterestClass.java">InterestClass.java</a>
+                <div class="desc">利息类，定义利息相关属性与计算逻辑</div>
+            </li>
+
+            <li>
+                <a href="InterestClassManageSystem.java">
+                    InterestClassManageSystem.java
+                </a>
+                <div class="desc">主系统类，负责整体业务流程与管理逻辑</div>
+            </li>
+
+            <li>
+                <a href="Student.java">Student.java</a>
+                <div class="desc">学生实体类，封装学生基本信息</div>
+            </li>
+
+            <li>
+                <a href="Test.java">Test.java</a>
+                <div class="desc">测试入口，用于功能验证与调试</div>
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>📄 实验与工程文件</h2>
+        <ul class="file-list">
+            <li>
+                <a href="实验报告(1).docx">实验报告（Word）</a>
+                <div class="desc">Java 大作业实验报告文档</div>
+            </li>
+
+            <li>
+                <a href="Java大作业.iml">Java大作业.iml</a>
+                <div class="desc">IntelliJ IDEA 工程配置文件</div>
+            </li>
+        </ul>
+    </section>
+
+</main>
+
+<footer>
+    © 2025 CreamPuff931 · Java Course Project
+</footer>
+
+</body>
+</html>
 
