@@ -43,7 +43,7 @@
 
         /* 侧边栏 */
         .sidebar {
-            width: 250px;
+            width: 260px;
             background: var(--white);
             border-right: 1px solid var(--border);
             overflow-y: auto;
@@ -60,6 +60,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
         }
         .nav-item:hover { background: #f0f0f0; }
         .nav-item.active { background: #eff6fc; color: var(--primary-color); font-weight: 600; }
@@ -89,8 +90,8 @@
         .file-row:hover { background-color: #f8f9fa; }
         
         .file-icon { width: 40px; text-align: center; font-size: 20px; color: var(--primary-color); }
-        .file-name { flex: 1; font-size: 14px; color: var(--text-main); }
-        .file-meta { width: 150px; font-size: 12px; color: var(--text-light); text-align: right; }
+        .file-name { flex: 1; font-size: 14px; color: var(--text-main); word-break: break-all; }
+        .file-meta { width: 100px; font-size: 12px; color: var(--text-light); text-align: right; }
 
         /* 图标颜色 */
         .fa-folder { color: #dbb700; }
@@ -99,6 +100,7 @@
         .fa-file-powerpoint { color: #d24726; }
         .fa-file-code { color: #107c10; }
         .fa-file-image { color: #b4009e; }
+        .fa-file-archive { color: #666; }
 
         /* --- 预览模态框 --- */
         .modal {
@@ -134,7 +136,7 @@
             padding: 0 20px;
         }
 
-        .preview-title { font-weight: 600; font-size: 14px; }
+        .preview-title { font-weight: 600; font-size: 14px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 60%; }
         
         .preview-actions button {
             padding: 5px 12px;
@@ -143,6 +145,7 @@
             border-radius: 4px;
             cursor: pointer;
             margin-left: 10px;
+            font-size: 12px;
         }
         .preview-actions button:hover { background: #eee; }
         .btn-download { color: var(--primary-color); border-color: var(--primary-color); }
@@ -152,7 +155,7 @@
             flex: 1;
             background: #e9e9e9;
             position: relative;
-            overflow: auto;
+            overflow: hidden; /* 防止双重滚动条 */
         }
 
         iframe { width: 100%; height: 100%; border: none; }
@@ -161,7 +164,8 @@
             padding: 20px;
             background: #1e1e1e;
             color: #d4d4d4;
-            min-height: 100%;
+            height: 100%;
+            overflow: auto;
             font-family: 'Consolas', monospace;
             white-space: pre-wrap;
         }
@@ -172,6 +176,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: auto;
         }
         .img-viewer img { max-width: 95%; max-height: 95%; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
@@ -182,6 +187,8 @@
             justify-content: center;
             height: 100%;
             color: #666;
+            text-align: center;
+            padding: 20px;
         }
 
         @media (max-width: 768px) {
@@ -193,7 +200,7 @@
 <body>
 
 <header>
-    <div class="logo"><i class="fas fa-cloud"></i> 课程资料库 (Cloudflare版)</div>
+    <div class="logo"><i class="fas fa-book"></i> 课程资料库</div>
     <input type="text" id="search" placeholder="搜索文件..." style="padding: 5px 10px; border:1px solid #ddd; border-radius:4px;">
 </header>
 
@@ -227,8 +234,17 @@
 </div>
 
 <script>
-    // --- 1. 数据结构 (严格对应你的目录结构) ---
-    // path 属性我们稍后自动生成，这里只定义结构
+    // ================= 配置区域 =================
+    // 这里填入你的 GitHub 仓库信息，确保文件路径绝对正确
+    const GITHUB_CONFIG = {
+        username: 'CreamPuff931',
+        repo: 'cs-learning-materials',
+        branch: 'main'
+    };
+    // ===========================================
+
+    // --- 1. 数据结构 ---
+    // 你的目录结构
     const fileData = {
         name: "根目录",
         type: "folder",
@@ -413,26 +429,23 @@
         ]
     };
 
-    // --- 2. 系统逻辑 ---
+    // --- 2. 逻辑 ---
 
     let currentPathStack = [fileData];
     let currentPreviewUrl = '';
 
-    // 初始化：自动补全文件真实路径
+    // 初始化：自动构建真实路径
     function initPaths(node, parentPath) {
-        // 如果是根目录，路径为空
+        // 构建类似 "计算机网络/复习.pdf" 的路径
         let myPath = parentPath === '' ? '' : (parentPath + '/' + node.name);
-        // 去除开头的斜杠
         if(myPath.startsWith('/')) myPath = myPath.substring(1);
         
-        node.fullPath = myPath; // 存储相对路径，例如 "Java大作业/Test.java"
+        node.relativePath = myPath; 
 
         if (node.children) {
             node.children.forEach(child => initPaths(child, myPath));
         }
     }
-    
-    // 启动初始化
     initPaths(fileData, '');
 
     window.onload = function() {
@@ -458,7 +471,7 @@
         });
     }
 
-    // 渲染主区域
+    // 渲染主内容
     function renderMainContent() {
         const currentFolder = currentPathStack[currentPathStack.length - 1];
         
@@ -476,7 +489,7 @@
             if(idx < currentPathStack.length - 1) bc.innerHTML += ' <i class="fas fa-chevron-right" style="font-size:10px; margin:0 5px;"></i> ';
         });
 
-        // 文件列表
+        // 列表
         const list = document.getElementById('fileList');
         list.innerHTML = '';
         
@@ -491,24 +504,21 @@
             row.onclick = () => handleFileClick(file);
             
             const icon = getIconClass(file.type);
-            
             row.innerHTML = `
                 <div class="file-icon"><i class="${icon}"></i></div>
                 <div class="file-name">${file.name}</div>
-                <div class="file-meta">${file.type === 'folder' ? '文件夹' : '文件'}</div>
+                <div class="file-meta">${file.type === 'folder' ? '文件夹' : '查看'}</div>
             `;
             list.appendChild(row);
         });
     }
 
-    // 导航操作
     function navigateRoot() {
         currentPathStack = [fileData];
         renderMainContent();
     }
 
     function enterFolder(folderName) {
-        // 只能从根目录进入一级目录 (侧边栏逻辑)
         const target = fileData.children.find(c => c.name === folderName);
         if(target) {
             currentPathStack = [fileData, target];
@@ -525,102 +535,128 @@
         }
     }
 
-    // --- 核心：全能预览功能 ---
+    // ==========================================
+    // 核心修复：构建正确的 URL
+    // ==========================================
+    function getFileUrl(file) {
+        // 使用 GitHub Raw 地址，确保拿到的是真实文件
+        // 格式: https://raw.githubusercontent.com/User/Repo/Branch/Path/To/File
+        // 关键点：对中文路径部分进行 encode
+        
+        const pathParts = file.relativePath.split('/');
+        const encodedPath = pathParts.map(part => encodeURIComponent(part)).join('/');
+        
+        return `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${encodedPath}`;
+    }
+
     function previewFile(file) {
         const modal = document.getElementById('previewModal');
         const title = document.getElementById('previewTitle');
         const body = document.getElementById('previewBody');
         
         title.innerText = file.name;
-        body.innerHTML = '<div style="padding:20px; text-align:center;">正在加载预览...</div>';
+        body.innerHTML = '<div style="padding:20px; text-align:center;">正在连接 GitHub 获取资源...</div>';
         modal.classList.add('active');
 
-        // 构建文件的真实 URL
-        // 注意：如果你文件没传上去，这里会 404
-        const fileUrl = encodeURI(file.fullPath);
-        currentPreviewUrl = fileUrl; // 保存用于下载
+        // 获取绝对链接
+        const fileUrl = getFileUrl(file);
+        currentPreviewUrl = fileUrl;
 
-        // 1. 图片预览
+        console.log("正在预览:", fileUrl); // 调试用
+
+        // 1. 图片
         if (file.type === 'image') {
             body.innerHTML = `<div class="img-viewer"><img src="${fileUrl}" alt="preview"></div>`;
         }
-        // 2. PDF 预览
-        else if (file.type === 'pdf') {
-            body.innerHTML = `<iframe src="${fileUrl}"></iframe>`;
-        }
-        // 3. 代码/文本 预览
+        // 2. 代码 / 文本
         else if (file.type === 'code') {
             fetch(fileUrl)
-                .then(res => {
-                    if(!res.ok) throw new Error("加载失败");
-                    return res.text();
-                })
+                .then(res => res.text())
                 .then(text => {
-                    // 简单的转义防止 HTML 注入
                     const safeText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     body.innerHTML = `<div class="code-viewer"><pre><code>${safeText}</code></pre></div>`;
                 })
                 .catch(err => {
-                    body.innerHTML = `<div class="not-supported">无法加载代码内容，可能文件不存在。<br>${err}</div>`;
+                    body.innerHTML = '<div class="not-supported">无法读取代码文件，请下载查看。</div>';
                 });
         }
-        // 4. Office 文档 (Word/PPT) - 使用微软接口
+        // 3. Office 文档 (Word/PPT/Excel)
         else if (file.type === 'word' || file.type === 'ppt') {
-            // 获取当前网站的完整域名地址
-            // 例如 https://yourname.github.io/repo/Java大作业/test.docx
-            const absoluteUrl = window.location.origin + window.location.pathname.replace('index.html', '') + file.fullPath;
-            
-            // 使用微软 Office Online Viewer
-            const officeUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(absoluteUrl)}`;
-            
+            // Office Viewer 需要 encodeURIComponent 对整个 URL 再次编码
+            const officeUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
             body.innerHTML = `<iframe src="${officeUrl}" frameborder="0"></iframe>`;
-            
-            // 提示：如果是本地开发 (localhost/file://)，Office 接口无法访问你的文件，会报错
-            if (window.location.hostname === 'localhost' || window.location.protocol === 'file:') {
-                body.innerHTML += `<div style="position:absolute; bottom:0; left:0; width:100%; background:#fff3cd; padding:5px; text-align:center; font-size:12px; color:#856404;">
-                    提示：Office预览在本地(Localhost)无法使用，必须部署到GitHub/Cloudflare后才能生效。
-                </div>`;
-            }
+        }
+        // 4. PDF (GitHub Raw 直接显示 PDF 有时会下载，这里用 JSDelivr 优化显示)
+        else if (file.type === 'pdf') {
+             // 针对 PDF，使用 JSDelivr CDN，因为它的 Content-Type 更标准，浏览器更愿意直接预览而不是下载
+             const pathParts = file.relativePath.split('/');
+             const encodedPath = pathParts.map(part => encodeURIComponent(part)).join('/');
+             const cdnUrl = `https://cdn.jsdelivr.net/gh/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}@${GITHUB_CONFIG.branch}/${encodedPath}`;
+             
+             body.innerHTML = `<iframe src="${cdnUrl}"></iframe>`;
+             currentPreviewUrl = cdnUrl; // 下载链接也用 CDN 比较快
         }
         // 5. 其他
         else {
             body.innerHTML = `<div class="not-supported">
                 <i class="fas fa-file-download fa-3x" style="margin-bottom:15px; color:#ccc;"></i>
-                <p>此文件类型暂不支持在线预览</p>
-                <button onclick="downloadCurrentFile()" style="margin-top:10px; padding:5px 15px;">直接下载</button>
+                <p>此文件不支持在线预览</p>
+                <button onclick="downloadCurrentFile()" style="margin-top:10px; padding:5px 15px;">下载文件</button>
             </div>`;
         }
     }
 
     function closePreview() {
         document.getElementById('previewModal').classList.remove('active');
-        document.getElementById('previewBody').innerHTML = ''; // 清理iframe防止后台播放
+        document.getElementById('previewBody').innerHTML = '';
     }
 
     function downloadCurrentFile() {
         const a = document.createElement('a');
         a.href = currentPreviewUrl;
-        a.download = '';
+        a.download = ''; // 尝试触发下载
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
     }
 
     function getIconClass(type) {
-        switch(type) {
-            case 'folder': return 'fas fa-folder';
-            case 'pdf': return 'fas fa-file-pdf';
-            case 'word': return 'fas fa-file-word';
-            case 'ppt': return 'fas fa-file-powerpoint';
-            case 'image': return 'fas fa-file-image';
-            case 'code': return 'fas fa-file-code';
-            default: return 'fas fa-file';
-        }
+        const map = {
+            'folder': 'fas fa-folder',
+            'pdf': 'fas fa-file-pdf',
+            'word': 'fas fa-file-word',
+            'ppt': 'fas fa-file-powerpoint',
+            'image': 'fas fa-file-image',
+            'code': 'fas fa-file-code',
+            'file': 'fas fa-file',
+            'zip': 'fas fa-file-archive'
+        };
+        return map[type] || 'fas fa-file';
     }
     
-    // 简单的搜索
+    // 搜索功能
     document.getElementById('search').addEventListener('input', (e)=>{
-        // 搜索逻辑略（如果需要可参照之前版本）
+        const val = e.target.value.toLowerCase();
+        if(!val) {
+            renderMainContent();
+            return;
+        }
+        const list = document.getElementById('fileList');
+        list.innerHTML = '';
+        // 递归搜索
+        function search(node) {
+            if(node.type !== 'folder' && node.name.toLowerCase().includes(val)) {
+                const row = document.createElement('div');
+                row.className = 'file-row';
+                row.onclick = () => previewFile(node); // 搜索结果直接预览
+                row.innerHTML = `<div class="file-icon"><i class="${getIconClass(node.type)}"></i></div>
+                                 <div class="file-name">${node.name}</div>
+                                 <div class="file-meta">搜索结果</div>`;
+                list.appendChild(row);
+            }
+            if(node.children) node.children.forEach(search);
+        }
+        search(fileData);
     });
 
 </script>
