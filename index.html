@@ -3,250 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的课程资料库</title>
+    <title>CS 学习资料库</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0078d4;
-            --bg-color: #f3f9ff;
+            --primary: #0366d6; /* GitHub Blue */
+            --bg: #f6f8fa;
             --white: #ffffff;
-            --border: #e1e4e8;
-            --text-main: #323130;
-            --text-light: #605e5c;
+            --border: #d0d7de;
+            --text-main: #24292f;
+            --text-sub: #57606a;
+            --hover: #f3f4f6;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
 
-        body {
-            background-color: var(--bg-color);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+        body { background-color: var(--bg); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* 顶部栏 */
-        header {
+        /* 顶部导航 */
+        .header {
             background: var(--white);
-            height: 50px;
+            height: 60px;
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            padding: 0 20px;
-            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
             justify-content: space-between;
         }
+        .brand { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .search-box input {
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            width: 260px;
+            background: var(--bg);
+        }
 
-        .logo { font-weight: 600; color: var(--primary-color); display: flex; gap: 10px; align-items: center; }
-
-        /* 主布局 */
-        .container { display: flex; flex: 1; overflow: hidden; }
+        /* 主体 */
+        .layout { display: flex; flex: 1; overflow: hidden; }
 
         /* 侧边栏 */
         .sidebar {
-            width: 260px;
+            width: 280px;
             background: var(--white);
             border-right: 1px solid var(--border);
             overflow-y: auto;
+            padding: 16px 0;
             display: flex;
             flex-direction: column;
-            padding-top: 10px;
         }
-        
         .nav-item {
-            padding: 10px 20px;
+            padding: 8px 24px;
             cursor: pointer;
             font-size: 14px;
             color: var(--text-main);
             display: flex;
             align-items: center;
-            gap: 8px;
-            text-decoration: none;
+            gap: 10px;
         }
-        .nav-item:hover { background: #f0f0f0; }
-        .nav-item.active { background: #eff6fc; color: var(--primary-color); font-weight: 600; }
+        .nav-item:hover { background: var(--hover); }
+        .nav-item.active { background: #eef3f8; color: var(--primary); font-weight: 600; border-right: 3px solid var(--primary); }
 
-        /* 文件列表区 */
-        .main-content { flex: 1; display: flex; flex-direction: column; background: var(--white); }
+        /* 内容区 */
+        .main { flex: 1; display: flex; flex-direction: column; background: var(--white); overflow: hidden; }
 
         .breadcrumb {
-            padding: 15px 20px;
+            padding: 16px 24px;
             border-bottom: 1px solid var(--border);
-            color: var(--text-light);
             font-size: 14px;
+            color: var(--primary);
         }
         .breadcrumb span { cursor: pointer; }
-        .breadcrumb span:hover { color: var(--primary-color); text-decoration: underline; }
+        .breadcrumb span:hover { text-decoration: underline; }
+        .breadcrumb .sep { color: var(--text-sub); margin: 0 8px; text-decoration: none !important; cursor: default; }
 
-        .file-list { padding: 0; overflow-y: auto; flex: 1; }
-
+        .file-list { flex: 1; overflow-y: auto; }
+        
         .file-row {
             display: flex;
             align-items: center;
-            padding: 12px 20px;
-            border-bottom: 1px solid #f3f2f1;
+            padding: 12px 24px;
+            border-bottom: 1px solid #ebf0f4;
             cursor: pointer;
-            transition: 0.1s;
         }
-        .file-row:hover { background-color: #f8f9fa; }
-        
-        .file-icon { width: 40px; text-align: center; font-size: 20px; color: var(--primary-color); }
-        .file-name { flex: 1; font-size: 14px; color: var(--text-main); word-break: break-all; }
-        .file-meta { width: 100px; font-size: 12px; color: var(--text-light); text-align: right; }
+        .file-row:hover { background: var(--hover); }
+        .icon { width: 32px; text-align: center; font-size: 18px; color: var(--text-sub); }
+        .name { flex: 1; font-size: 14px; font-weight: 500; }
+        .meta { font-size: 12px; color: var(--text-sub); }
 
-        /* 图标颜色 */
-        .fa-folder { color: #dbb700; }
-        .fa-file-pdf { color: #e81123; }
-        .fa-file-word { color: #2b579a; }
-        .fa-file-powerpoint { color: #d24726; }
-        .fa-file-code { color: #107c10; }
-        .fa-file-image { color: #b4009e; }
-        .fa-file-archive { color: #666; }
+        /* 图标色 */
+        .fa-folder { color: #54aeff; }
+        .fa-file-pdf { color: #ff5555; }
+        .fa-file-word { color: #3b82f6; }
+        .fa-file-powerpoint { color: #f97316; }
+        .fa-file-image { color: #a855f7; }
 
-        /* --- 预览模态框 --- */
-        .modal {
+        /* 模态框 */
+        .modal-mask {
             display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            justify-content: center; align-items: center;
         }
+        .modal-mask.show { display: flex; }
         
-        .modal.active { display: flex; }
-
-        .preview-box {
+        .preview-window {
             background: white;
-            width: 90%;
-            height: 90%;
+            width: 90%; height: 90%;
             border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
         }
-
-        .preview-header {
-            height: 50px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
+        .pw-header {
+            padding: 0 20px; height: 50px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            background: #fcfcfc;
         }
-
-        .preview-title { font-weight: 600; font-size: 14px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 60%; }
-        
-        .preview-actions button {
-            padding: 5px 12px;
-            border: 1px solid #ccc;
-            background: white;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-            font-size: 12px;
-        }
-        .preview-actions button:hover { background: #eee; }
-        .btn-download { color: var(--primary-color); border-color: var(--primary-color); }
-        .btn-close { color: #d13438; border-color: #d13438; }
-
-        .preview-body {
-            flex: 1;
-            background: #e9e9e9;
-            position: relative;
-            overflow: hidden; /* 防止双重滚动条 */
-        }
-
+        .pw-title { font-weight: 600; font-size: 14px; }
+        .pw-body { flex: 1; background: #eee; position: relative; }
         iframe { width: 100%; height: 100%; border: none; }
         
-        .code-viewer {
-            padding: 20px;
-            background: #1e1e1e;
-            color: #d4d4d4;
-            height: 100%;
-            overflow: auto;
-            font-family: 'Consolas', monospace;
-            white-space: pre-wrap;
-        }
+        .btn { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; font-size: 12px; background: white; margin-left: 8px; }
+        .btn:hover { background: #f3f3f3; }
+        .btn-primary { background: var(--primary); color: white; border: none; }
+        .btn-primary:hover { background: #005cc5; }
 
-        .img-viewer {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: auto;
-        }
-        .img-viewer img { max-width: 95%; max-height: 95%; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-
-        .not-supported {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: #666;
-            text-align: center;
-            padding: 20px;
-        }
-
-        @media (max-width: 768px) {
+        .not-support { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #666; }
+        
+        /* 移动端 */
+        @media(max-width: 768px) {
             .sidebar { display: none; }
-            .preview-box { width: 100%; height: 100%; border-radius: 0; }
+            .preview-window { width: 100%; height: 100%; border-radius: 0; }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo"><i class="fas fa-book"></i> 课程资料库</div>
-    <input type="text" id="search" placeholder="搜索文件..." style="padding: 5px 10px; border:1px solid #ddd; border-radius:4px;">
-</header>
+<div class="header">
+    <div class="brand"><i class="fab fa-github"></i> 资料库</div>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜索文件...">
+    </div>
+</div>
 
-<div class="container">
-    <aside class="sidebar" id="sidebar">
-        <!-- 侧边栏动态生成 -->
-    </aside>
-
-    <main class="main-content">
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="main">
         <div class="breadcrumb" id="breadcrumb"></div>
-        <div class="file-list" id="fileList">
-            <!-- 文件列表动态生成 -->
-        </div>
+        <div class="file-list" id="fileList"></div>
     </main>
 </div>
 
-<!-- 预览窗口 -->
-<div class="modal" id="previewModal">
-    <div class="preview-box">
-        <div class="preview-header">
-            <span class="preview-title" id="previewTitle">filename.pdf</span>
-            <div class="preview-actions">
-                <button class="btn-download" onclick="downloadCurrentFile()"><i class="fas fa-download"></i> 下载</button>
-                <button class="btn-close" onclick="closePreview()"><i class="fas fa-times"></i> 关闭</button>
+<!-- 预览弹窗 -->
+<div class="modal-mask" id="modal">
+    <div class="preview-window">
+        <div class="pw-header">
+            <span class="pw-title" id="fileTitle">文件预览</span>
+            <div>
+                <button class="btn btn-primary" onclick="forceDownload()">下载</button>
+                <button class="btn" onclick="closeModal()">关闭</button>
             </div>
         </div>
-        <div class="preview-body" id="previewBody">
-            <!-- 内容动态填充 -->
-        </div>
+        <div class="pw-body" id="pwBody"></div>
     </div>
 </div>
 
 <script>
-    // ================= 配置区域 =================
-    // 这里填入你的 GitHub 仓库信息，确保文件路径绝对正确
-    const GITHUB_CONFIG = {
-        username: 'CreamPuff931',
+    // ==========================================
+    // 1. 核心配置 (请确认这里无误)
+    // ==========================================
+    const CONFIG = {
+        user: 'CreamPuff931',
         repo: 'cs-learning-materials',
         branch: 'main'
     };
-    // ===========================================
 
-    // --- 1. 数据结构 ---
-    // 你的目录结构
+    // ==========================================
+    // 2. 数据结构 (JSON)
+    // ==========================================
     const fileData = {
-        name: "根目录",
+        name: "根目录", // 这个名字在下面会被忽略，不会拼接到URL里
         type: "folder",
         children: [
             {
@@ -429,230 +367,247 @@
         ]
     };
 
-    // --- 2. 逻辑 ---
+    // ==========================================
+    // 3. 关键逻辑修复
+    // ==========================================
 
-    let currentPathStack = [fileData];
-    let currentPreviewUrl = '';
-
-    // 初始化：自动构建真实路径
-    function initPaths(node, parentPath) {
-        // 构建类似 "计算机网络/复习.pdf" 的路径
-        let myPath = parentPath === '' ? '' : (parentPath + '/' + node.name);
-        if(myPath.startsWith('/')) myPath = myPath.substring(1);
+    // 初始化：构建真实路径 (修正版)
+    function initPathStructure(node, currentPath) {
+        // 核心修复：如果节点是 "根目录"，我们不要把它包含在路径里
+        // 之前的代码可能生成了 "根目录/计算机网络/..."
+        // 现在逻辑：如果当前节点是根目录，传给子节点的路径前缀是 ""
         
-        node.relativePath = myPath; 
+        let myPath = "";
+
+        if (node.name === "根目录" || currentPath === null) {
+            myPath = ""; 
+        } else {
+            // 如果 parentPath 已经是 "计算机网络"，当前是 "复习.pdf"
+            // myPath = "计算机网络/复习.pdf"
+            myPath = currentPath ? (currentPath + "/" + node.name) : node.name;
+        }
+
+        node.realPath = myPath; // 存储：例如 "计算机网络/计算机网络复习.pdf"
 
         if (node.children) {
-            node.children.forEach(child => initPaths(child, myPath));
+            node.children.forEach(child => initPathStructure(child, myPath));
         }
     }
-    initPaths(fileData, '');
 
-    window.onload = function() {
-        renderSidebar();
-        renderMainContent();
+    // 立即执行初始化
+    initPathStructure(fileData, null);
+
+    // ==========================================
+    // 4. URL 生成器 (核心修复)
+    // ==========================================
+    function generateGithubUrl(fileNode) {
+        // 拿到我们在 initPathStructure 里算好的路径，例如 "计算机网络/计算机网络复习.pdf"
+        const rawPath = fileNode.realPath;
+        
+        if (!rawPath) {
+            alert("路径生成错误：空路径");
+            return "";
+        }
+
+        // 必须对每个部分分别编码！不能对整个字符串编码，否则 "/" 也会变成 "%2F"
+        const parts = rawPath.split('/');
+        const encodedPath = parts.map(p => encodeURIComponent(p)).join('/');
+
+        // 拼接 GitHub Raw 地址
+        // https://raw.githubusercontent.com/CreamPuff931/cs-learning-materials/main/EncodedPath
+        return `https://raw.githubusercontent.com/${CONFIG.user}/${CONFIG.repo}/${CONFIG.branch}/${encodedPath}`;
     }
 
-    // 渲染侧边栏
+    // ==========================================
+    // 5. 界面渲染逻辑
+    // ==========================================
+    let currentStack = [fileData];
+    let currentFileUrl = ""; // 保存当前打开的文件URL
+
+    window.onload = () => {
+        renderSidebar();
+        renderView();
+    };
+
     function renderSidebar() {
         const sb = document.getElementById('sidebar');
-        sb.innerHTML = `<div class="nav-item ${currentPathStack.length===1?'active':''}" onclick="navigateRoot()">
-                            <i class="fas fa-home"></i> 根目录
-                        </div>`;
+        sb.innerHTML = `<div class="nav-item ${currentStack.length===1?'active':''}" onclick="goRoot()">
+            <i class="fas fa-home"></i> 根目录
+        </div>`;
         
+        // 侧边栏只显示第一级文件夹
         fileData.children.forEach(item => {
             if(item.type === 'folder') {
-                sb.innerHTML += `
-                    <div class="nav-item" onclick="enterFolder('${item.name}')">
-                        <i class="fas fa-folder"></i> ${item.name}
-                    </div>
-                `;
+                sb.innerHTML += `<div class="nav-item" onclick="enterFolder('${item.name}')">
+                    <i class="fas fa-folder"></i> ${item.name}
+                </div>`;
             }
         });
     }
 
-    // 渲染主内容
-    function renderMainContent() {
-        const currentFolder = currentPathStack[currentPathStack.length - 1];
+    function renderView() {
+        const currentFolder = currentStack[currentStack.length - 1];
         
         // 面包屑
         const bc = document.getElementById('breadcrumb');
         bc.innerHTML = '';
-        currentPathStack.forEach((folder, idx) => {
+        currentStack.forEach((folder, index) => {
             const span = document.createElement('span');
             span.innerText = folder.name;
             span.onclick = () => {
-                currentPathStack = currentPathStack.slice(0, idx + 1);
-                renderMainContent();
+                currentStack = currentStack.slice(0, index + 1);
+                renderView();
             };
             bc.appendChild(span);
-            if(idx < currentPathStack.length - 1) bc.innerHTML += ' <i class="fas fa-chevron-right" style="font-size:10px; margin:0 5px;"></i> ';
+            if(index < currentStack.length - 1) {
+                bc.innerHTML += '<span class="sep">/</span>';
+            }
         });
 
-        // 列表
+        // 文件列表
         const list = document.getElementById('fileList');
         list.innerHTML = '';
         
-        if (!currentFolder.children || currentFolder.children.length === 0) {
-            list.innerHTML = '<div style="padding:20px; color:#999; text-align:center;">空文件夹</div>';
+        if(!currentFolder.children || currentFolder.children.length === 0) {
+            list.innerHTML = '<div style="padding:40px; text-align:center; color:#999">文件夹为空</div>';
             return;
         }
 
-        currentFolder.children.forEach(file => {
-            const row = document.createElement('div');
-            row.className = 'file-row';
-            row.onclick = () => handleFileClick(file);
+        currentFolder.children.forEach(node => {
+            const el = document.createElement('div');
+            el.className = 'file-row';
+            el.onclick = () => handleClick(node);
             
-            const icon = getIconClass(file.type);
-            row.innerHTML = `
-                <div class="file-icon"><i class="${icon}"></i></div>
-                <div class="file-name">${file.name}</div>
-                <div class="file-meta">${file.type === 'folder' ? '文件夹' : '查看'}</div>
+            let iconClass = 'fas fa-file';
+            if(node.type === 'folder') iconClass = 'fas fa-folder';
+            else if(node.type === 'pdf') iconClass = 'fas fa-file-pdf';
+            else if(node.type === 'word') iconClass = 'fas fa-file-word';
+            else if(node.type === 'ppt') iconClass = 'fas fa-file-powerpoint';
+            else if(node.type === 'code') iconClass = 'fas fa-file-code';
+            else if(node.type === 'image') iconClass = 'fas fa-file-image';
+
+            el.innerHTML = `
+                <div class="icon"><i class="${iconClass}"></i></div>
+                <div class="name">${node.name}</div>
+                <div class="meta">${node.type === 'folder' ? '文件夹' : '文件'}</div>
             `;
-            list.appendChild(row);
+            list.appendChild(el);
         });
     }
 
-    function navigateRoot() {
-        currentPathStack = [fileData];
-        renderMainContent();
+    // 交互逻辑
+    function goRoot() {
+        currentStack = [fileData];
+        renderView();
     }
-
-    function enterFolder(folderName) {
-        const target = fileData.children.find(c => c.name === folderName);
+    
+    function enterFolder(name) {
+        // 从根目录查找
+        const target = fileData.children.find(c => c.name === name);
         if(target) {
-            currentPathStack = [fileData, target];
-            renderMainContent();
+            currentStack = [fileData, target];
+            renderView();
         }
     }
 
-    function handleFileClick(file) {
-        if (file.type === 'folder') {
-            currentPathStack.push(file);
-            renderMainContent();
+    function handleClick(node) {
+        if (node.type === 'folder') {
+            currentStack.push(node);
+            renderView();
         } else {
-            previewFile(file);
+            openPreview(node);
         }
     }
 
     // ==========================================
-    // 核心修复：构建正确的 URL
+    // 6. 预览逻辑
     // ==========================================
-    function getFileUrl(file) {
-        // 使用 GitHub Raw 地址，确保拿到的是真实文件
-        // 格式: https://raw.githubusercontent.com/User/Repo/Branch/Path/To/File
-        // 关键点：对中文路径部分进行 encode
+    function openPreview(node) {
+        const modal = document.getElementById('modal');
+        const title = document.getElementById('fileTitle');
+        const body = document.getElementById('pwBody');
         
-        const pathParts = file.relativePath.split('/');
-        const encodedPath = pathParts.map(part => encodeURIComponent(part)).join('/');
+        title.innerText = node.name;
+        modal.classList.add('show');
+        body.innerHTML = '<div class="not-support">正在加载资源...</div>';
+
+        // 生成 URL
+        const url = generateGithubUrl(node);
+        currentFileUrl = url;
+
+        console.log("生成的链接:", url); // 调试用：你按F12能在控制台看到这个链接
+
+        // 根据类型决定怎么预览
         
-        return `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${encodedPath}`;
-    }
-
-    function previewFile(file) {
-        const modal = document.getElementById('previewModal');
-        const title = document.getElementById('previewTitle');
-        const body = document.getElementById('previewBody');
-        
-        title.innerText = file.name;
-        body.innerHTML = '<div style="padding:20px; text-align:center;">正在连接 GitHub 获取资源...</div>';
-        modal.classList.add('active');
-
-        // 获取绝对链接
-        const fileUrl = getFileUrl(file);
-        currentPreviewUrl = fileUrl;
-
-        console.log("正在预览:", fileUrl); // 调试用
-
-        // 1. 图片
-        if (file.type === 'image') {
-            body.innerHTML = `<div class="img-viewer"><img src="${fileUrl}" alt="preview"></div>`;
+        // 图片
+        if (node.type === 'image') {
+            body.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:100%"><img src="${url}" style="max-width:90%;max-height:90%"></div>`;
         }
-        // 2. 代码 / 文本
-        else if (file.type === 'code') {
-            fetch(fileUrl)
-                .then(res => res.text())
-                .then(text => {
-                    const safeText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                    body.innerHTML = `<div class="code-viewer"><pre><code>${safeText}</code></pre></div>`;
-                })
-                .catch(err => {
-                    body.innerHTML = '<div class="not-supported">无法读取代码文件，请下载查看。</div>';
-                });
+        // PDF (使用 jsDelivr CDN 可能会更好，但先试 Raw)
+        else if (node.type === 'pdf') {
+            // PDF 直接嵌入
+            // 技巧：如果是 Raw Github，有时浏览器会强制下载。
+            // 我们可以尝试替换域名为 cdn.jsdelivr.net 加速并支持预览
+            // https://cdn.jsdelivr.net/gh/User/Repo@Branch/Path
+            const cdnUrl = url.replace('raw.githubusercontent.com', 'cdn.jsdelivr.net/gh')
+                              .replace('/main/', '@main/');
+            body.innerHTML = `<iframe src="${cdnUrl}"></iframe>`;
+            currentFileUrl = cdnUrl; // 下载也用快的
         }
-        // 3. Office 文档 (Word/PPT/Excel)
-        else if (file.type === 'word' || file.type === 'ppt') {
-            // Office Viewer 需要 encodeURIComponent 对整个 URL 再次编码
-            const officeUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
-            body.innerHTML = `<iframe src="${officeUrl}" frameborder="0"></iframe>`;
+        // Office (Word/PPT)
+        else if (node.type === 'word' || node.type === 'ppt') {
+            const encodedUrl = encodeURIComponent(url);
+            const officeViewer = `https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}`;
+            body.innerHTML = `<iframe src="${officeViewer}"></iframe>`;
         }
-        // 4. PDF (GitHub Raw 直接显示 PDF 有时会下载，这里用 JSDelivr 优化显示)
-        else if (file.type === 'pdf') {
-             // 针对 PDF，使用 JSDelivr CDN，因为它的 Content-Type 更标准，浏览器更愿意直接预览而不是下载
-             const pathParts = file.relativePath.split('/');
-             const encodedPath = pathParts.map(part => encodeURIComponent(part)).join('/');
-             const cdnUrl = `https://cdn.jsdelivr.net/gh/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}@${GITHUB_CONFIG.branch}/${encodedPath}`;
-             
-             body.innerHTML = `<iframe src="${cdnUrl}"></iframe>`;
-             currentPreviewUrl = cdnUrl; // 下载链接也用 CDN 比较快
+        // 代码/文本
+        else if (node.type === 'code') {
+            fetch(url).then(res => res.text()).then(txt => {
+                const safe = txt.replace(/</g, "&lt;");
+                body.innerHTML = `<div style="padding:20px;overflow:auto;height:100%;background:#2d2d2d;color:#ccc;font-family:monospace;white-space:pre;">${safe}</div>`;
+            }).catch(e => {
+                body.innerHTML = `<div class="not-support">无法读取文件内容 (跨域或404)</div>`;
+            });
         }
-        // 5. 其他
         else {
-            body.innerHTML = `<div class="not-supported">
-                <i class="fas fa-file-download fa-3x" style="margin-bottom:15px; color:#ccc;"></i>
-                <p>此文件不支持在线预览</p>
-                <button onclick="downloadCurrentFile()" style="margin-top:10px; padding:5px 15px;">下载文件</button>
+            body.innerHTML = `<div class="not-support">
+                <i class="fas fa-download fa-3x" style="margin-bottom:15px"></i>
+                <p>该格式不支持在线预览</p>
             </div>`;
         }
     }
 
-    function closePreview() {
-        document.getElementById('previewModal').classList.remove('active');
-        document.getElementById('previewBody').innerHTML = '';
+    function closeModal() {
+        document.getElementById('modal').classList.remove('show');
+        document.getElementById('pwBody').innerHTML = '';
     }
 
-    function downloadCurrentFile() {
+    function forceDownload() {
+        if(!currentFileUrl) return;
         const a = document.createElement('a');
-        a.href = currentPreviewUrl;
-        a.download = ''; // 尝试触发下载
+        a.href = currentFileUrl;
+        a.download = '';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
     }
-
-    function getIconClass(type) {
-        const map = {
-            'folder': 'fas fa-folder',
-            'pdf': 'fas fa-file-pdf',
-            'word': 'fas fa-file-word',
-            'ppt': 'fas fa-file-powerpoint',
-            'image': 'fas fa-file-image',
-            'code': 'fas fa-file-code',
-            'file': 'fas fa-file',
-            'zip': 'fas fa-file-archive'
-        };
-        return map[type] || 'fas fa-file';
-    }
     
-    // 搜索功能
-    document.getElementById('search').addEventListener('input', (e)=>{
+    // 搜索
+    document.getElementById('searchInput').addEventListener('input', (e) => {
         const val = e.target.value.toLowerCase();
-        if(!val) {
-            renderMainContent();
-            return;
-        }
+        if(!val) { renderView(); return; }
+        
         const list = document.getElementById('fileList');
         list.innerHTML = '';
+        
         // 递归搜索
         function search(node) {
             if(node.type !== 'folder' && node.name.toLowerCase().includes(val)) {
-                const row = document.createElement('div');
-                row.className = 'file-row';
-                row.onclick = () => previewFile(node); // 搜索结果直接预览
-                row.innerHTML = `<div class="file-icon"><i class="${getIconClass(node.type)}"></i></div>
-                                 <div class="file-name">${node.name}</div>
-                                 <div class="file-meta">搜索结果</div>`;
-                list.appendChild(row);
+                const el = document.createElement('div');
+                el.className = 'file-row';
+                el.innerHTML = `<div class="icon"><i class="fas fa-search"></i></div><div class="name">${node.name}</div><div class="meta">搜索结果</div>`;
+                el.onclick = () => openPreview(node);
+                list.appendChild(el);
             }
             if(node.children) node.children.forEach(search);
         }
