@@ -2,51 +2,677 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>CS 学习材料</title>
-    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的课程资料库</title>
+    <!-- 引入 FontAwesome 图标库 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f7fa;
+            --text-color: #333;
+            --text-light: #666;
+            --border-color: #e1e4e8;
+            --hover-bg: #eeffff;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+
+        body {
+            background-color: var(--secondary-color);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 顶部导航栏 */
+        header {
+            background: white;
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 8px 15px;
+            padding-left: 35px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            outline: none;
+            width: 300px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
+        /* 主体布局 */
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* 左侧侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: white;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        .nav-item:hover {
+            background-color: var(--hover-bg);
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background-color: #e3f2fd;
+            color: var(--primary-color);
+            font-weight: 500;
+            border-right: 3px solid var(--primary-color);
+        }
+
+        /* 右侧内容区 */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 面包屑导航 */
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .breadcrumb span {
+            cursor: pointer;
+        }
+        
+        .breadcrumb span:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        .breadcrumb i {
+            margin: 0 8px;
+            font-size: 0.8rem;
+        }
+
+        /* 文件网格 */
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 20px;
+        }
+
+        .file-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .file-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            border-color: #b3d7ff;
+        }
+
+        .file-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #888;
+        }
+
+        /* 不同文件类型的颜色 */
+        .icon-folder { color: #f7b926; }
+        .icon-pdf { color: #ff5252; }
+        .icon-word { color: #2b579a; }
+        .icon-ppt { color: #d24726; }
+        .icon-code { color: #28a745; }
+        .icon-image { color: #9c27b0; }
+        .icon-zip { color: #607d8b; }
+
+        .file-name {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            word-break: break-word;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+        }
+
+        .file-meta {
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: #999;
+        }
+
+        /* 提示框 */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* 图片预览模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+        }
+
+        .modal-placeholder-img {
+            width: 300px;
+            height: 200px;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+    </style>
 </head>
 <body>
 
-<!-- 顶部导航栏 -->
-<nav class="navbar">
-    <div class="nav-container">
-        <a class="logo" href="./">CS Learning Materials</a>
-        <div class="nav-links">
-            <a href="./">主页</a>
-            <a href="https://github.com/CreamPuff931/cs-learning-materials" target="_blank">GitHub</a>
-        </div>
-    </div>
-</nav>
-
-<div class="container">
-
     <header>
-        <h1>CS 学习材料</h1>
-        <p>本科计算机专业课程资料整理</p>
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            <span>课程资料管理系统</span>
+        </div>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="搜索文件或资料...">
+        </div>
     </header>
 
-    <main class="course-grid">
-        <a class="course-card" href="Java大作业/">
-            <h2>Java 大作业</h2>
-            <p>学生管理系统课程设计</p>
-        </a>
+    <div class="container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="nav-item active" onclick="navigateTo('root')">
+                <i class="fas fa-home"></i> 根目录
+            </div>
+            <!-- 动态生成 -->
+        </aside>
 
-        <a class="course-card" href="操作系统综合实验/">
-            <h2>操作系统综合实验</h2>
-            <p>进程调度与虚拟内存</p>
-        </a>
+        <!-- 主内容 -->
+        <main class="main-content">
+            <div class="breadcrumb" id="breadcrumb">
+                <span>根目录</span>
+            </div>
+            
+            <div class="file-grid" id="fileGrid">
+                <!-- 动态生成 -->
+            </div>
+        </main>
+    </div>
 
-        <a class="course-card" href="编译技术/">
-            <h2>编译技术</h2>
-            <p>词法分析与语法分析</p>
-        </a>
-    </main>
+    <!-- 提示框 -->
+    <div class="toast" id="toast">已开始下载...</div>
 
-    <footer>
-        © 2025 CreamPuff931 · 657309.xyz
-    </footer>
+    <!-- 简易模态框 -->
+    <div class="modal" id="modal" onclick="this.style.display='none'">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-placeholder-img">
+                <i class="fas fa-image fa-3x"></i>
+            </div>
+            <p id="modalText">图片预览</p>
+            <button onclick="document.getElementById('modal').style.display='none'" style="margin-top:10px; padding:5px 15px; cursor:pointer;">关闭</button>
+        </div>
+    </div>
 
-</div>
+<script>
+    // --- 1. 数据结构构建 (根据提供的目录结构) ---
+    const fileSystem = {
+        name: "根目录",
+        type: "folder",
+        children: [
+            {
+                name: "Java大作业", type: "folder", children: [
+                    { name: "InterestClass.java", type: "code" },
+                    { name: "InterestClassManageSystem.java", type: "code" },
+                    { name: "Java大作业.iml", type: "code" },
+                    { name: "Student.java", type: "code" },
+                    { name: "Test.java", type: "code" },
+                    { name: "index.html", type: "code" },
+                    { name: "实验报告(1).docx", type: "word" }
+                ]
+            },
+            {
+                name: "信息安全数学基础", type: "folder", children: [
+                    { name: "2020年信息安全数学基础(A卷).pdf", type: "pdf" }
+                ]
+            },
+            {
+                name: "信息安全综合实验", type: "folder", children: [
+                    { name: "80910168_信息安全综合实验_实验任务书最终版1.doc", type: "word" },
+                    { name: "80910168_信息安全综合实验_实验任务书最终版1.doc.sig", type: "file" }
+                ]
+            },
+            {
+                name: "信息论与编码", type: "folder", children: [
+                    { name: "信息论与编码原理不挂科-1-信息论简介与概率论复习.pdf", type: "pdf" },
+                    { name: "信息论与编码原理不挂科-2-离散信源及其信息测度.pdf", type: "pdf" },
+                    { name: "信息论与编码原理不挂科-3-离散信道及信道容量.pdf", type: "pdf" },
+                    { name: "信息论与编码原理不挂科-4-波形信源与波形信道.pdf", type: "pdf" },
+                    { name: "信息论与编码原理不挂科-5-无失真信源编码.pdf", type: "pdf" },
+                    { name: "信息论与编码原理不挂科-6-限失真信源编码简介.pdf", type: "pdf" },
+                    { name: "信息论与编码原理不挂科-7-有噪信道编码.pdf", type: "pdf" },
+                    { name: "信息论与编码原理不挂科-8-信道的纠错编码.pdf", type: "pdf" }
+                ]
+            },
+            {
+                name: "大学物理", type: "folder", children: [
+                    { name: "20大物下.pdf", type: "pdf" },
+                    { name: "大物下.pdf", type: "pdf" },
+                    { name: "电磁感应测试.pdf", type: "pdf" },
+                    { name: "静电场测试.pdf", type: "pdf" }
+                ]
+            },
+            {
+                name: "操作系统综合实验", type: "folder", children: [
+                    { name: "80910272操作系统综合实验实验指导书（2025）.doc", type: "word" },
+                    { name: "EOS操作系统实验教程.pdf", type: "pdf" }
+                ]
+            },
+            {
+                name: "数字逻辑与数字系统设计", type: "folder", children: [
+                    { name: "试卷", type: "folder", children: [] },
+                    { name: "数字逻辑与数字系统设计实验报告.docx", type: "word" },
+                    { name: "数字逻辑与数字系统设计综合实验任务书1.doc", type: "word" },
+                    { name: "数字逻辑与数字系统设计综合实验任务书2023.doc", type: "word" },
+                    { name: "数字逻辑课与数字系统设计综合实验报告格式2023.doc", type: "word" },
+                    { name: "迟富祥_220211090801(1).doc", type: "word" }
+                ]
+            },
+            {
+                name: "数据库原理", type: "folder", children: [
+                    { name: "SQL语言.pdf", type: "pdf" },
+                    { name: "大题解题方法.pdf", type: "pdf" },
+                    { name: "范式级别判断.pdf", type: "pdf" },
+                    { name: "选填题知识点.pdf", type: "pdf" }
+                ]
+            },
+            {
+                name: "数据库原理课程设计", type: "folder", children: [
+                    { name: "数据库课程设计报告格式202420252(1).docx", type: "word" },
+                    { name: "课程设计任务书.pdf", type: "pdf" }
+                ]
+            },
+            {
+                name: "汇编语言程序设计", type: "folder", children: [
+                    { name: "实战篇代码", type: "folder", children: [] },
+                    { name: "《IBM-PC汇编语言程序设计（第2版）》.pdf", type: "pdf" },
+                    { name: "汇编程序最终.pdf", type: "pdf" },
+                    { name: "汇编考题.pdf", type: "pdf" }
+                ]
+            },
+            {
+                name: "离散数学", type: "folder", children: [
+                    { name: "《离散数学(方世昌)》习题解答.pdf", type: "pdf" }
+                ]
+            },
+            {
+                name: "算法设计与分析基础", type: "folder", children: [
+                    { name: "33.png", type: "image" },
+                    { name: "62.png", type: "image" },
+                    { name: "微信图片_20240503212439.png", type: "image" },
+                    { name: "微信图片_20240503233813.png", type: "image" },
+                    { name: "算法设计与分析第一章绪论.pptx", type: "ppt" },
+                    { name: "算法设计与分析第三章分治法.pptx", type: "ppt" },
+                    { name: "算法设计与分析第二章递归.pptx", type: "ppt" },
+                    { name: "算法设计与分析第五章贪心法V1.1.pptx", type: "ppt" },
+                    { name: "算法设计与分析第六章回溯法v1.1.pptx", type: "ppt" },
+                    { name: "算法设计与分析第四章动态规划法V1.2.pptx", type: "ppt" }
+                ]
+            },
+            {
+                name: "线性代数", type: "folder", children: [
+                    { name: "2020线代期中（彭康学导团）.pdf", type: "pdf" },
+                    { name: "2022 线性代数 习题册 第1章.pdf", type: "pdf" },
+                    { name: "2022 线性代数 习题册 第2章.pdf", type: "pdf" },
+                    { name: "2022 线性代数 习题册 第3章.pdf", type: "pdf" },
+                    { name: "2022 线性代数 习题册 第4、5章.pdf", type: "pdf" },
+                    { name: "习题册第3章答案.pdf", type: "pdf" },
+                    { name: "习题册第四章答案.pdf", type: "pdf" },
+                    { name: "第5章实对称矩阵与二次型 答案.docx", type: "word" },
+                    { name: "线性代数 第一章答案(修订稿).pdf", type: "pdf" },
+                    { name: "线性代数 第二章答案(定稿).pdf", type: "pdf" },
+                    { name: "线性代数教材-1-2章.pdf", type: "pdf" }
+                ]
+            },
+            {
+                name: "编译技术", type: "folder", children: [
+                    { name: "08卷子.pdf", type: "pdf" },
+                    { name: "编译原理（网络信安）试卷(1).pdf", type: "pdf" },
+                    { name: "编译技术笔记.pdf", type: "pdf" }
+                ]
+            },
+            {
+                name: "编译技术课程设计", type: "folder", children: [
+                    { name: "2025-2026-1编译课程设计任务书+报告书.doc", type: "word" }
+                ]
+            },
+            {
+                name: "网络安全综合实验", type: "folder", children: [
+                    { name: "202420251网络安全综合实验报告格式(1).doc", type: "word" },
+                    { name: "202420251网络安全综合实验课任务书.doc", type: "word" }
+                ]
+            },
+            {
+                name: "计算机密码学综合实验", type: "folder", children: [
+                    { name: "计算机密码学综合实验任务书及实验报告模板(1).doc", type: "word" }
+                ]
+            },
+            {
+                name: "计算机组成原理", type: "folder", children: [
+                    { name: "2.4多位ALU设计.pdf", type: "pdf" },
+                    { name: "31第三章存储系统.pdf", type: "pdf" },
+                    { name: "32第三章存储系统.pdf", type: "pdf" },
+                    { name: "第一章计算机系统概述.pdf", type: "pdf" },
+                    { name: "第二章运算方法和运算器.pdf", type: "pdf" },
+                    { name: "计算机组成原理论文要求.docx", type: "word" },
+                    { name: "论文排版样例.doc", type: "word" }
+                ]
+            },
+            {
+                name: "计算机网络", type: "folder", children: [
+                    { name: "计算机网络ppt总结.docx", type: "word" },
+                    { name: "计算机网络复习.pdf", type: "pdf" },
+                    { name: "计算机网络第8版课件第1章概述.pptx", type: "ppt" },
+                    { name: "计算机网络第8版课件第2章物理层.pptx", type: "ppt" },
+                    { name: "计算机网络第8版课件第3章数据链路层.pptx", type: "ppt" },
+                    { name: "计算机网络第8版课件第4章网络层.pptx", type: "ppt" },
+                    { name: "计算机网络第8版课件第5章运输层.pptx", type: "ppt" },
+                    { name: "计算机网络第8版课件第6章应用层.pptx", type: "ppt" }
+                ]
+            },
+            {
+                name: "高等数学", type: "folder", children: [
+                    { name: "知识梳理", type: "folder", children: [] },
+                    { name: "不定积分公式默写.png", type: "image" },
+                    { name: "不定积分公式默写答案.png", type: "image" },
+                    { name: "求导公式答案.png", type: "image" },
+                    { name: "求导公式默写.png", type: "image" },
+                    { name: "高等数学 习题册 第三章.pdf", type: "pdf" },
+                    { name: "高等数学 习题册 第二章(1).pdf", type: "pdf" },
+                    { name: "高等数学 习题册上（第一章）.pdf", type: "pdf" }
+                ]
+            },
+            { name: "README.md", type: "code" },
+            { name: "index.html", type: "code" },
+            { name: "style.css", type: "code" }
+        ]
+    };
 
+    // --- 2. 逻辑控制 ---
+    
+    let currentFolder = fileSystem;
+    let pathStack = [fileSystem];
+
+    // 初始化
+    window.onload = function() {
+        renderSidebar();
+        renderFiles(currentFolder.children);
+    };
+
+    // 渲染侧边栏 (仅显示第一级目录)
+    function renderSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        // 保留"根目录"按钮
+        sidebar.innerHTML = `
+            <div class="nav-item ${currentFolder === fileSystem ? 'active' : ''}" onclick="navigateToRoot()">
+                <i class="fas fa-home"></i> 根目录
+            </div>
+        `;
+
+        fileSystem.children.forEach(item => {
+            if (item.type === 'folder') {
+                const isActive = (currentFolder.name === item.name) ? 'active' : '';
+                sidebar.innerHTML += `
+                    <div class="nav-item ${isActive}" onclick="enterSidebarFolder('${item.name}')">
+                        <i class="fas fa-folder"></i> ${item.name}
+                    </div>
+                `;
+            }
+        });
+    }
+
+    // 渲染文件网格
+    function renderFiles(items) {
+        const grid = document.getElementById('fileGrid');
+        grid.innerHTML = '';
+
+        if (!items || items.length === 0) {
+            grid.innerHTML = '<div class="empty-state">此文件夹为空</div>';
+            return;
+        }
+
+        items.forEach(item => {
+            const iconInfo = getIcon(item.type);
+            const div = document.createElement('div');
+            div.className = 'file-card';
+            div.onclick = () => handleItemClick(item);
+            
+            div.innerHTML = `
+                <i class="${iconInfo.class} file-icon ${iconInfo.colorClass}"></i>
+                <div class="file-name">${item.name}</div>
+                <div class="file-meta">${item.type === 'folder' ? '文件夹' : formatSize()}</div>
+            `;
+            grid.appendChild(div);
+        });
+    }
+
+    // 处理图标
+    function getIcon(type) {
+        switch(type) {
+            case 'folder': return { class: 'fas fa-folder', colorClass: 'icon-folder' };
+            case 'pdf': return { class: 'fas fa-file-pdf', colorClass: 'icon-pdf' };
+            case 'word': return { class: 'fas fa-file-word', colorClass: 'icon-word' };
+            case 'ppt': return { class: 'fas fa-file-powerpoint', colorClass: 'icon-ppt' };
+            case 'image': return { class: 'fas fa-file-image', colorClass: 'icon-image' };
+            case 'code': return { class: 'fas fa-file-code', colorClass: 'icon-code' };
+            case 'zip': return { class: 'fas fa-file-archive', colorClass: 'icon-zip' };
+            default: return { class: 'fas fa-file', colorClass: '' };
+        }
+    }
+
+    // 随机生成文件大小 (增加真实感)
+    function formatSize() {
+        const sizes = ['KB', 'MB'];
+        const num = Math.floor(Math.random() * 900) + 10;
+        const unit = sizes[Math.floor(Math.random() * sizes.length)];
+        return num + ' ' + unit;
+    }
+
+    // 导航逻辑
+    function navigateToRoot() {
+        pathStack = [fileSystem];
+        currentFolder = fileSystem;
+        updateView();
+    }
+
+    function enterSidebarFolder(folderName) {
+        const target = fileSystem.children.find(i => i.name === folderName);
+        if (target) {
+            pathStack = [fileSystem, target];
+            currentFolder = target;
+            updateView();
+        }
+    }
+
+    function handleItemClick(item) {
+        if (item.type === 'folder') {
+            pathStack.push(item);
+            currentFolder = item;
+            updateView();
+        } else if (item.type === 'image') {
+            showModal(item.name);
+        } else {
+            showToast(`正在下载: ${item.name}`);
+        }
+    }
+
+    function updateView() {
+        renderSidebar(); // 更新高亮
+        renderBreadcrumb();
+        renderFiles(currentFolder.children);
+        // 清空搜索
+        document.getElementById('searchInput').value = '';
+    }
+
+    function renderBreadcrumb() {
+        const b = document.getElementById('breadcrumb');
+        b.innerHTML = '';
+        pathStack.forEach((folder, index) => {
+            const span = document.createElement('span');
+            span.innerText = folder.name;
+            span.onclick = () => {
+                // 点击面包屑跳转
+                pathStack = pathStack.slice(0, index + 1);
+                currentFolder = pathStack[pathStack.length - 1];
+                updateView();
+            };
+            b.appendChild(span);
+            
+            if (index < pathStack.length - 1) {
+                b.innerHTML += '<i class="fas fa-chevron-right"></i>';
+            }
+        });
+    }
+
+    // 搜索功能
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const val = e.target.value.toLowerCase();
+        if (!val) {
+            renderFiles(currentFolder.children);
+            return;
+        }
+
+        // 递归搜索所有文件
+        const results = [];
+        function searchRecursive(folder) {
+            if (!folder.children) return;
+            folder.children.forEach(item => {
+                if (item.name.toLowerCase().includes(val)) {
+                    results.push(item);
+                }
+                if (item.type === 'folder') {
+                    searchRecursive(item);
+                }
+            });
+        }
+        searchRecursive(fileSystem);
+        renderFiles(results);
+    });
+
+    // 交互反馈
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function showModal(name) {
+        const m = document.getElementById('modal');
+        document.getElementById('modalText').innerText = name;
+        m.style.display = 'flex';
+    }
+
+</script>
 </body>
 </html>
