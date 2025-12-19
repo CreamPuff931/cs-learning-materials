@@ -1,4 +1,4 @@
-/* ===== 全局基础 ===== */
+/* ===== 重置 & 基础 ===== */
 * {
     box-sizing: border-box;
 }
@@ -11,6 +11,39 @@ body {
     color: #333;
 }
 
+/* ===== 顶部导航栏 ===== */
+.navbar {
+    background-color: #1f2937;
+    padding: 14px 0;
+}
+
+.navbar .nav-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar .logo {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.navbar .nav-links a {
+    color: #d1d5db;
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.navbar .nav-links a:hover {
+    color: #ffffff;
+}
+
 /* ===== 页面容器 ===== */
 .container {
     max-width: 1100px;
@@ -18,23 +51,18 @@ body {
     padding: 40px 20px;
 }
 
-/* ===== 头部 ===== */
-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
+/* ===== 页面标题 ===== */
 header h1 {
-    font-size: 36px;
-    margin-bottom: 10px;
+    font-size: 32px;
+    margin-bottom: 8px;
 }
 
 header p {
     color: #666;
-    font-size: 16px;
+    margin-bottom: 30px;
 }
 
-/* ===== 课程卡片布局 ===== */
+/* ===== 课程卡片 ===== */
 .course-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -48,22 +76,12 @@ header p {
     text-decoration: none;
     color: inherit;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: 0.2s;
 }
 
 .course-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12);
-}
-
-.course-card h2 {
-    font-size: 20px;
-    margin-bottom: 8px;
-}
-
-.course-card p {
-    font-size: 14px;
-    color: #555;
 }
 
 /* ===== 文件列表 ===== */
@@ -82,20 +100,8 @@ header p {
 
 .file-list a {
     text-decoration: none;
-    color: #1a73e8;
+    color: #2563eb;
     font-weight: 500;
-}
-
-.file-list a:hover {
-    text-decoration: underline;
-}
-
-/* ===== 返回链接 ===== */
-.back-link {
-    display: inline-block;
-    margin-bottom: 20px;
-    text-decoration: none;
-    color: #1a73e8;
 }
 
 /* ===== 页脚 ===== */
